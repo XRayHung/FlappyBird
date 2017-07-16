@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+		    canvas {
+	            border:1px solid red;
+	        }
+	        img {
+	            display: none;
+	        }
+		</style>
+		<script src="js/util.js" ></script>
+		<script src="js/bird.js" ></script>
+	    <script src="js/land.js" ></script>
+	    <script src="js/pipe.js" ></script>
+	    <script src="js/background.js" ></script>
+	    <script src="js/gameScene.js" ></script>
+	    <script src="js/overScene.js" ></script>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="400" height="400"></canvas>
+		<script type="text/javascript">
+			
+			var cvs = document.getElementById("myCanvas");
+			var ctx = cvs.getContext("2d");
+				
+			util.loadImage({
+				bird: 'img/bird.png',
+	            land: 'img/land.png',
+	            pipeDown: 'img/pipeDown.png',
+	            pipeUp: 'img/pipeUp.png',
+	            sky: 'img/sky.png'
+			},function(imgObj){
+				
+				//根据背景的大小来设置画布的大小
+	            cvs.width = imgObj.sky.width;
+	            cvs.height = imgObj.sky.height;
+	            
+	            var isRun=true;
+	            
+				//创建游戏场景
+                var gameScene = getGameScene( ctx, imgObj );
+
+	            //创建游戏结束场景
+	            var overScene = getOverScene( ctx );
+				
+				//添加监听者 将参数函数添加到监听者队列中
+                gameScene.addListener(function(){
+//              	//一旦监听到小鸟死亡就立即关闭定时器
+//              	clearInterval(timer);
+
+                    isRun=false;
+                    
+                	//并且绘制游戏结束场景
+                	overScene.draw();
+                });
+                
+//              var timer=setInterval(function(){
+//              	gameScene.draw();
+//              },50);
+
+                //使用动画帧函数
+                (function run(){
+                	gameScene.draw();
+                	if(isRun){
+                		requestAnimationFrame(run);
+                	}
+                })();
+
+			});
+			
+			
+			
+			
+		</script>
+	</body>
+</html>
